@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سیستم مدیریت دانشگاهی | محمدمهدی مسعودی مطلق</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            900: '#0b0f19',
+                            800: '#111827',
+                            700: '#1f2937',
+                            600: '#374151'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Vazirmatn', 'Tahoma', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Vazirmatn Font -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <!-- Alpine.js for Interactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-dark-900 text-gray-100 min-h-screen flex flex-col" x-data="universityApp()">
+
+    <!-- App Container -->
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-dark-800 border-l border-dark-700 flex flex-col z-20">
+            <!-- App Logo / Header -->
+            <div class="p-5 border-b border-dark-700 flex items-center space-x-3 space-x-reverse">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-blue-500/20">
+                    M
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold text-white truncate w-36" x-text="student.name"></h1>
+                    <span class="text-xs text-gray-400">کارشناسی حسابداری</span>
+                </div>
+            </div>
+
+            <!-- Nav Links -->
+            <nav class="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto">
+                <template x-for="tab in tabs" :key="tab.id">
+                    <button @click="currentTab = tab.id"
+                        :class="currentTab === tab.id ? 'bg-blue-600/10 text-blue-400 border-r-4 border-blue-500 font-medium' : 'text-gray-400 hover:bg-dark-700 hover:text-gray-200'"
+                        class="w-full flex items-center space-x-3 space-x-reverse px-4 py-2.5 rounded-lg text-sm transition-all duration-200">
+                        <span x-html="tab.icon" class="w-5 h-5 flex items-center justify-center"></span>
+                        <span x-text="tab.name"></span>
+                    </button>
+                </template>
+            </nav>
+
+            <!-- Sidebar Footer Status -->
+            <div class="p-4 border-t border-dark-700 bg-dark-800/50">
+                <div class="flex items-center justify-between text-xs text-gray-400 mb-1">
+                    <span>وضعیت ترم جاری:</span>
+                    <span class="text-emerald-400 font-medium">4051 (فعال)</span>
+                </div>
+                <div class="w-full bg-dark-700 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-blue-500 h-full w-3/4 rounded-full"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+            
+            <!-- Top Header -->
+            <header class="h-16 bg-dark-800/80 backdrop-blur-md border-b border-dark-700 flex items-center justify-between px-6 z-10">
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <h2 class="text-lg font-bold text-white" x-text="tabs.find(t => t.id === currentTab)?.name"></h2>
+                </div>
+                
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <!-- Quick Notice Badge -->
+                    <div class="hidden sm:flex items-center space-x-2 space-x-reverse bg-dark-700/50 border border-dark-600 px-3 py-1.5 rounded-full text-xs text-gray-300">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>آخرین بروزرسانی: <span x-text="student.lastUpdated"></span></span>
+                    </div>
+
+                    <!-- User Avatar Pill -->
+                    <div class="flex items-center space-x-3 space-x-reverse bg-dark-700/60 px-3 py-1.5 rounded-xl border border-dark-600">
+                        <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-xs font-bold text-white">
+                            مم
+                        </div>
+                        <span class="text-sm font-medium text-gray-200" x-text="student.name"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Scrollable Viewport -->
+            <main class="flex-1 overflow-y-auto p-6 bg-dark-900">
+                
+                <!-- ================= 1. DASHBOARD ================= -->
+                <div x-show="currentTab === 'dashboard'" class="space-y-6" x-cloak>
+                    <!-- Welcome Banner -->
+                    <div class="bg-gradient-to-r from-blue-900/40 via-dark-800 to-dark-800 border border-blue-500/20 rounded-2xl p-6 relative overflow-hidden shadow-xl">
+                        <div class="absolute -left-10 -bottom-10 w-48 h-48 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+                        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <div class="inline-flex items-center space-x-2 space-x-reverse bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1 rounded-full text-xs font-medium mb-3">
+                                    <span>دانشگاه آزاد اسلامی واحد کرج</span>
+                                </div>
+                                <h3 class="text-2xl font-black text-white" x-text="'سلام، ' + student.name"></h3>
+                                <p class="text-gray-400 text-sm mt-1">مشغول به تحصیل / واجد شرایط انتخاب واحد | شماره دانشجویی: <span x-text="student.studentId"></span></p>
+                            </div>
+                            <div class="flex items-center space-x-3 space-x-reverse bg-dark-900/60 border border-dark-700 p-4 rounded-xl">
+                                <div>
+                                    <span class="text-xs text-gray-400 block">معدل کل</span>
+                                    <span class="text-2xl font-black text-emerald-400" x-text="student.overallGpa"></span>
+                                </div>
+                                <div class="h-8 w-px bg-dark-700 mx-2"></div>
+                                <div>
+                                    <span class="text-xs text-gray-400 block">واحد پاس‌شده</span>
+                                    <span class="text-2xl font-black text-blue-400" x-text="student.unitsPassed"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metric Cards Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-dark-800 border border-dark-700 rounded-xl p-5 shadow-sm">
+                            <div class="flex items-center justify-between text-gray-400 mb-2">
+                                <span class="text-xs font-medium">واحدهای اخذ شده</span>
+                                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                            </div>
+                            <div class="text-2xl font-bold text-white" x-text="student.unitsTaken"></div>
+                            <span class="text-xs text-gray-500 mt-1 block">موثر پاس‌شده: <span x-text="student.effectiveUnitsCompleted"></span></span>
+                        </div>
+
+                        <div class="bg-dark-800 border border-dark-700 rounded-xl p-5 shadow-sm">
+                            <div class="flex items-center justify-between text-gray-400 mb-2">
+                                <span class="text-xs font-medium">ترم‌های گذرانده</span>
+                                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <div class="text-2xl font-bold text-white" x-text="student.semestersCompleted"></div>
+                            <span class="text-xs text-gray-500 mt-1 block">مجاز باقی‌مانده: <span x-text="student.remainingAllowedSemesters"></span> ترم</span>
+                        </div>
+
+                        <div class="bg-dark-800 border border-dark-700 rounded-xl p-5 shadow-sm">
+                            <div class="flex items-center justify-between text-gray-400 mb-2">
+                                <span class="text-xs font-medium">ترم جاری (4051)</span>
+                                <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            </div>
+                            <div class="text-2xl font-bold text-white">19 واحد</div>
+                            <span class="text-xs text-gray-500 mt-1 block">7 درس ثبت‌شده</span>
+                        </div>
+
+                        <div class="bg-dark-800 border border-dark-700 rounded-xl p-5 shadow-sm">
+                            <div class="flex items-center justify-between text-gray-400 mb-2">
+                                <span class="text-xs font-medium">وضعیت مالی (بدهی)</span>
+                                <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div class="text-xl font-bold text-rose-400" x-text="formatNumber(finance.currentBalance) + ' ریال'"></div>
+                            <span class="text-xs text-gray-500 mt-1 block" x-text="'معادل ' + formatToman(finance.currentBalance)"></span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Schedule Snapshot -->
+                    <div class="bg-dark-800 border border-dark-700 rounded-xl p-5 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-base font-bold text-white">برنامه درسی نیمسال جاری (مع نگاه اجمالی)</h4>
+                            <button @click="currentTab = 'schedule'" class="text-xs text-blue-400 hover:text-blue-300 font-medium">مشاهده کامل جدول هفته →</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <template x-for="course in semester4051Courses.slice(0, 3)" :key="course.code">
+                                <div class="bg-dark-700/50 border border-dark-600/60 rounded-lg p-3">
+                                    <div class="flex justify-between items-start mb-1">
+                                        <span class="text-xs font-bold text-blue-400" x-text="course.name"></span>
+                                        <span class="text-xs bg-dark-600 text-gray-300 px-2 py-0.5 rounded" x-text="course.units + ' واحد'"></span>
+                                    </div>
+                                    <p class="text-xs text-gray-400">استاد: <span x-text="course.teacher"></span></p>
+                                    <p class="text-xs text-gray-400 mt-0.5"><span x-text="course.day"></span> | <span x-text="course.time"></span></p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= 2. WEEKLY SCHEDULE ================= -->
+                <div x-show="currentTab === 'schedule'" class="space-y-6" x-cloak>
+                    <div class="bg-dark-800 border border-dark-700 rounded-xl p-5">
+                        <h3 class="text-lg font-bold text-white mb-2">برنامه هفتگی کلاس‌ها (ترم 4051)</h3>
+                        <p class="text-sm text-gray-400 mb-6">برنامه حضور در کلاس‌های ترم جاری بر اساس روزهای هفته</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                            <template x-for="day in daysOfWeek" :key="day.id">
+                                <div class="bg-dark-900/60 border border-dark-700 rounded-xl p-4 flex flex-col">
+                                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-dark-700">
+                                        <span class="font-bold text-white text-sm" x-text="day.name"></span>
+                                        <span class="text-xs bg-dark-700 text-gray-300 px-2 py-0.5 rounded" x-text="getCoursesForDay(day.id).length + ' درس'"></span>
+                                    </div>
+                                    <div class="space-y-3 flex-1">
+                                        <template x-for="course in getCoursesForDay(day.id)" :key="course.code">
+                                            <div class="bg-dark-800 border border-dark-700/80 rounded-lg p-3 relative hover:border-blue-500/50 transition-colors">
+                                                <div class="flex justify-between items-start mb-1.5">
+                                                    <h5 class="text-xs font-bold text-white" x-text="course.name"></h5>
+                                                    <span class="text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded font-medium" x-text="course.units + ' واحد'"></span>
+                                                </div>
+                                                <div class="space-y-1 text-[11px] text-gray-400">
+                                                    <p class="flex items-center space-x-1 space-x-reverse">
+                                                        <span>استاد:</span> <strong class="text-gray-200" x-text="course.teacher"></strong>
+                                                    </p>
+                                                    <p class="flex items-center space-x-1 space-x-reverse">
+                                                        <span>ساعت:</span> <strong class="text-gray-200" x-text="course.time"></strong>
+                                                    </p>
+                                                    <div class="flex items-center justify-between mt-2 pt-2 border-t border-dark-700">
+                                                        <span class="text-[10px] text-gray-500" x-text="'کد ارائه: ' + course.offering"></span>
+                                                        <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded" x-text="course.delivery"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <div x-show="getCoursesForDay(day.id).length === 0" class="flex flex-col items-center justify-center h-28 text-gray-500 text-xs">
+                                            <span>کلاسی در این روز وجود ندارد</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= 3. COURSES ================= -->
+                <div x-show="currentTab === 'courses'" class="space-y-6" x-cloak>
+                    <div class="bg-dark-800 border border-dark-700 rounded-xl p-5">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-white">دروس ترم جاری (4051)</h3>
+                                <p class="text-sm text-gray-400">لیست کامل دروس ثبت نام شده و جزئیات شهریه متغیر</p>
+                            </div>
+                            <div class="w-full md:w-72">
+                                <input type="text" x-model="courseSearch" placeholder="جستجوی درس یا استاد..." class="w-full bg-dark-900 border border-dark-700 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-blue-500">
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right text-xs">
+                                <thead class="bg-dark-900/80 text-gray-400 border-b border-dark-700">
+                                    <tr>
+                                        <th class="p-3">نام درس</th>
+                                        <th class="p-3">کد درس / ارائه</th>
+                                        <th class="p-3">استاد</th>
+                                        <th class="p-3">زمان تشکیل</th>
+                                        <th class="p-3">واحد</th>
+                                        <th class="p-3">شهریه متغیر (ریال)</th>
+                                        <th class="p-3">شیوه برگزاری</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-dark-700">
+                                    <template x-for="c in filteredCourses" :key="c.code">
+                                        <tr class="hover:bg-dark-700/30">
+                                            <td class="p-3 font-medium text-white" x-text="c.name"></td>
+                                            <td class="p-3 text-gray-400"><span x-text="c.code"></span> / <span x-text="c.offering"></span></td>
+                                            <td class="p-3 text-gray-300" x-text="c.teacher"></td>
+                                            <td class="p-3 text-gray-300"><span x-text="c.day"></span> <span x-text="c.time"></span></td>
+                                            <td class="p-3 text-gray-200 font-bold" x-text="c.units"></td>
+                                            <td class="p-3 text-blue-400 font-medium" x-text="formatNumber(c.variableTuition)"></td>
+                                            <td class="p-3">
+                                                <span class="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded text-[10px]" x-text="c.delivery"></span>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= 4. SEMESTERS ================= -->
+                <div x-show="currentTab === 'semesters'" class="space-y-6" x-cloak>
+                    <div class="bg-dark-800 border border-dark-700 rounded-xl p-5">
+                        <h3 class="text-lg font-bold text-white mb-2">ترم‌های تحصیلی</h3>
+                        <p class="text-sm text-gray-400 mb-6">تاریخچه ترم‌های گذرانده و جاری</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <template x-for="sem in semesters" :key="sem.code">
+                                <div class="bg-dark-900/50 border border-dark-700 rounded-xl p-5 flex flex-col justify-between hover:border-blue-500/40 transition-all">
+                                    <div>
+                                        <div class="flex items-center justify-between mb-3">
+                                            <span class="text-sm font-bold text-blue-400" x-text="'کد ترم: ' + sem.code"></span>
+                                            <span class="text-xs px-2 py-0.5 rounded font-medium" :class="sem.status.includes('Regular') || sem.status.includes('عالی') ? 'bg-emerald-500/10 text-emerald-400' : 'bg-blue-500/10 text-blue-400'" x-text="sem.status"></span>
+                                        </div>
+                                        <h4 class="text-xs text-gray-400 mb-4" x-text="sem.academicYear"></h4>
+                                        
+                                        <div class="space-y-2 text-xs border-t border-dark-700 pt-3">
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-400">معدل ترم:</span>
+                                                <span class="font-bold text-emerald-400" x-text="sem.gpa"></span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-400">واحدهای اخذ شده:</span>
+                                                <span class="text-white" x-text="sem.unitsTaken"></span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-400">واحدهای پاس شده:</span>
+                                                <span class="text-blue-400" x-text="sem.unitsPassed"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= 5. GRADES ================= -->
+                <div x-show="currentTab === 'grades'" class="space-y-6" x-cloak>
+                    <div class="bg-dark-800 border border-dark-700 rounded-xl p-5">
+                        <h3 class="text-lg font-bold text-white mb-2">کارنامه تحصیلی (ریز نمرات)</h3>
+                        <p class="text-sm text-gray-400 mb-6">تفکیک نمرات و معدل هر ترم</p>
+
+                        <!-- Semester 4041 Grades -->
+                        <div class="mb-8 border border-dark-700 rounded-xl overflow-hidden">
+                            <div class="bg-dark-900/80 p-4 border-b border-dark-700 flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-bold text-white text-sm">نیمسال اول 1404-1405 (کد 4041)</h4>
+                                    <span class="text-xs text-gray-400">وضعیت: Regular / Excellent</span>
+                                </div>
+                                <div class="text-left">
+                                    <span class="text-xs text-gray-400">معدل ترم: </span>
+                                    <span class="text-emerald-400 font-black text-sm">17.71</span>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-right text-xs">
+                                    <thead class="bg-dark-900/40 text-gray-400 border-b border-dark-700">
+                                        <tr>
+                                            <th class="p-3">نام درس</th>
+                                            <th class="p-3">کد درس</th>
+                                            <th class="p-3">نوع درس</th>
+                                            <th class="p-3">واحد</th>
+                                            <th class="p-3">نمره</th>
+                                            <th class="p-3">نمره وزنی</th>
+                                            <th class="p-3">وضعیت</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-dark-700">
+                                        <template x-for="g in grades4041" :key="g.code">
+                                            <tr class="hover:bg-dark-700/30">
+                                                <td class="p-3 font-medium text-white" x-text="g.name"></td>
+                                                <td class="p-3 text-gray-400" x-text="g.code"></td>
+                                                <td class="p-3 text-gray-300" x-text="g.type"></td>
+                                                <td class="p-3 text-gray-200" x-text="g.units"></td>
+                                                <td class="p-3 font-bold text-emerald-400" x-text="g.grade"></td>
+                                                <td class="p-3 text-gray-300" x-text="g.weightedScore"></td>
+                                                <td class="p-3"><span class="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded text-[10px]" x-text="g.status"></span></td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Semester 4042 Grades -->
+                        <div class="mb-8 border border-dark-700 rounded-xl overflow-hidden">
+                            <div class="bg-dark-900/80 p-4 border-b border-dark-700 flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-bold text-white text-sm">نیمسال دوم 1404-1405 (کد 4042)</h4>
+                                    <span class="text-xs text-gray-400">وضعیت: Regular semester</span>
+                                </div>
+                                <div class="text-left">
+                                    <span class="text-xs text-gray-400">معدل ترم: </span>
+                                    <span class="text-emerald-400 font-black text-sm">16.97</span>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-right text-xs">
+                                    <thead class="bg-dark-900/40 text-gray-400 border-b border-dark-700">
+                                        <tr>
+                                            <th class="p-3">نام درس</th>
+                                            <th class="p-3">کد درس</th>
+                                            <th class="p-3">نوع درس</th>
+                                            <th class="p-3">واحد</th>
+                                            <th class="p-3">نمره</th>
+                                            <th class="p-3">نمره وزنی</th>
+                                            <th class="p-3">وضعیت</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-dark-700">
+                                        <template x-for="g in grades4042" :key="g.code">
+                                            <tr class="hover:bg-dark-700/30">
+                                                <td class="p-3 font-medium text-white" x-text="g.name"></td>
+                                                <td class="p-3 text-gray-400" x-text="g.code"></td>
+                                                <td class="p-3 text-gray-300" x-text="g.type"></td>
+                                                <td class="p-3 text-gray-200" x-text="g.units"></td>
+                                                <td class="p-3 font-bold text-emerald-400" x-text="g.grade"></td>
+                                                <td class="p-3 text-gray-300" x-text="g.weightedScore"></td>
+                                                <td class="p-3"><span class="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded text-[10px]" x-text="g.status"></span></td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Semester 4051 Notice -->
+                        <div class="border border-amber-500/30 bg-amber-500/5 rounded-xl p-5 text-center">
+                            <h4 class="font-bold text-amber-400 text-sm mb-1">نیمسال 4051 (ترم جاری)</h4>
+                            <p class="text-xs text-gray-400">Grades/details unavailable in university system (نمرات و جزئیات ارزیابی این ترم هنوز در سیستم دانشگاهی درج نشده است).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= 6. FINANCE ================= -->
+                <div x-show="currentTab === 'finance'" class="space-y-6" x-cloak>
+                    <!-- Financial Summary Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-dark-800 border border-dark-700 rounded-xl p-5">
+                            <span class="text-xs text-gray-400 block mb-1">کل بدهی</span>
+                            <div class="text-lg font-bold text-rose-400" x-text="formatNumber(finance.totalDebit) + ' ریال'"></div>
+                            <span class="text-[11px] text-gray-500 mt-1 block" x-text="formatToman(finance.totalDebit)"></span>
+                        </div>
+                        <div class="bg-dark-800 border border-dark-700 rounded-xl p-5">
+                            <span class="text-xs text-gray-400 block mb-1">کل بستانکاری / واریزی</span>
+                            <div class="text-lg font-bold text-emerald-400" x-text="formatNumber(finance.totalCredit) + ' ریال'"></div>
+                            <span class="text-[11px] text-gray-500 mt-1 block" x-text="formatToman(finance.totalCredit)"></span>
+                        </div>
+                        <div class="bg-dark-800 border border-dark-700 rounded-xl p-5">
+                            <span class="text-xs text-gray-400 block mb-1">تراز جاری (بدهی خالص)</span>
+                            <div class="text-lg font-bold text-amber-400" x-text="formatNumber(finance.currentBalance) + ' ریال'"></div>
+                            <span class="text-[11px] text-gray-500 mt-1 block" x-text="formatToman(finance.currentBalance)"></span>
+                        </div>
+                        <div class="bg-dark-800 border border-dark-700 rounded-xl p-5 flex flex-col justify-between">
+                            <span class="text-xs text-gray-400 block mb-1">مبلغ قابل پرداخت</span>
+                            <div class="text-lg font-bold text-blue-400" x-text="formatNumber(finance.requiredPayment) + ' ریال'"></div>
+                            <span class="text-[11px] text-gray-500 mt-1 block" x-text="formatToman(finance.requiredPayment)"></span>
+                        </div>
+                    </div>
+
+                    <!-- Tuition Breakdown by Semester -->
+                    <div class="bg-dark-800 border border-dark-700 rounded-xl p-5">
+                        <h3 class="text-lg font-bold text-white mb-2">تفکیک شهریه ترم‌ها</h3>
+                        <p class="text-sm text-gray-400 mb-6">جزئیات شهریه ثابت و متغیر ترم‌های مختلف</p>
+
+                        <div class="space-y-4">
+                            <template x-for="sem in finance.semesters" :key="sem.code">
+                                <div class="bg-dark-900/60 border border-dark-700 rounded-xl p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                    <div>
+                                        <h4 class="font-bold text-white text-sm" x-text="'ترم ' + sem.code"></h4>
+                                        <div class="flex space-x-4 space-x-reverse text-xs text-gray-400 mt-1">
+                                            <span>ثابت: <strong class="text-gray-200" x-text="formatNumber(sem.fixed) + ' ریال'"></strong></span>
+                                            <span>متغیر: <strong class="text-gray-200" x-text="formatNumber(sem.variable) + ' ریال'"></strong></span>
+                                        </div>
+                                    </div>
+                                    <div class="text-left bg-dark-800 px-4 py-2 rounded-lg border border-dark-700 w-full md:w-auto">
+                                        <span class="text-[10px] text-gray-400 block">جمع کل ترم</span>
+                                        <span class="text-sm font-black text-blue-400" x-text="formatNumber(sem.total) + ' ریال'"></span>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= 7. ACADEMIC PROGRESS ================= -->
+                <div x-show="currentTab === 'progress'" class="space-y-6" x-cloak>
+                    <div class="bg-dark-800 border border-dark-700 rounded-xl p-5">
+                        <h3 class="text-lg font-bold text-white mb-2">پیشرفت تحصیلی و نمودار واحدها</h3>
+                        <p class="text-sm text-gray-400 mb-6">وضعیت پیشرفت تفکیک شده بر اساس گروه‌های درسی (مقدار کل واحدهای رشته قابل تنظیم در لایه داده است)</p>
+
+                        <!-- Configurable Total Units Setting -->
+                        <div class="bg-dark-900/60 border border-dark-700 p-4 rounded-xl mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div>
+                                <h4 class="text-xs font-bold text-white">کل واحدهای مورد نیاز دوره کارشناسی حسابداری</h4>
+                                <p class="text-[11px] text-gray-400">جهت تعیین دقیق درصد پیشرفت دوره تحصیلی</p>
+                            </div>
+                            <div class="flex items-center space-x-2 space-x-reverse">
+                                <input type="number" x-model.number="configTotalDegreeUnits" class="w-24 bg-dark-800 border border-dark-600 rounded-lg px-3 py-1.5 text-xs text-white text-center font-bold focus:outline-none focus:border-blue-500">
+                                <span class="text-xs text-gray-400">واحد</span>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar Summary -->
+                        <div class="bg-dark-900/80 border border-dark-700 rounded-xl p-5 mb-6">
+                            <div class="flex justify-between text-xs mb-2">
+                                <span class="text-gray-300 font-medium">پیشرفت کل دوره (<span x-text="student.unitsPassed"></span> از <span x-text="configTotalDegreeUnits"></span> واحد)</span>
+                                <span class="text-blue-400 font-bold" x-text="calculateProgressPercentage() + '%'"></span>
+                            </div>
+                            <div class="w-full bg-dark-700 h-3 rounded-full overflow-hidden">
+                                <div class="bg-gradient-to-r from-blue-600 to-indigo-500 h-full rounded-full transition-all duration-500" :style="'width: ' + calculateProgressPercentage() + '%'"></div>
+                            </div>
+                        </div>
+
+                        <!-- Category Statistics Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <template x-for="cat in categoryStats" :key="cat.name">
+                                <div class="bg-dark-900/50 border border-dark-700 rounded-xl p-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h5 class="text-xs font-bold text-white" x-text="cat.name"></h5>
+                                        <span class="text-[10px] bg-dark-700 text-gray-300 px-2 py-0.5 rounded" x-text="'معدل: ' + cat.gpa"></span>
+                                    </div>
+                                    <div class="space-y-1 text-xs text-gray-400">
+                                        <div class="flex justify-between">
+                                            <span>اخذ شده:</span>
+                                            <span class="text-white font-medium" x-text="cat.taken"></span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>پاس شده:</span>
+                                            <span class="text-blue-400 font-medium" x-text="cat.passed"></span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>مردود:</span>
+                                            <span class="text-rose-400 font-medium" x-text="cat.failed"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= 8. STUDENT PROFILE ================= -->
+                <div x-show="currentTab === 'profile'" class="space-y-6" x-cloak>
+                    <div class="bg-dark-800 border border-dark-700 rounded-xl p-5">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-white">پروفایل دانشجویی</h3>
+                                <p class="text-sm text-gray-400">اطلاعات هویتی و تحصیلی ثبت شده در سامانه</p>
+                            </div>
+                            <!-- Private Details Toggle -->
+                            <div class="flex items-center space-x-3 space-x-reverse bg-dark-900/60 border border-dark-700 px-4 py-2 rounded-xl">
+                                <span class="text-xs text-gray-300">نمایش اطلاعات حساس (کد ملی و شناسنامه):</span>
+                                <button @click="showSensitive = !showSensitive" 
+                                    class="w-10 h-6 flex items-center rounded-full p-1 transition-colors duration-300"
+                                    :class="showSensitive ? 'bg-blue-600 justify-start' : 'bg-dark-700 justify-end'">
+                                    <div class="bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300"></div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                            <div class="bg-dark-900/50 border border-dark-700 p-4 rounded-xl">
+                                <span class="text-gray-400 block mb-1">نام و نام خانوادگی</span>
+                                <strong class="text-white text-sm" x-text="student.name"></strong>
+                            </div>
+                            <div class="bg-dark-900/50 border border-dark-700 p-4 rounded-xl">
+                                <span class="text-gray-400 block mb-1">شماره دانشجویی</span>
+                                <strong class="text-white text-sm" x-text="student.studentId"></strong>
+                            </div>
+                            <div class="bg-dark-900/50 border border-dark-700 p-4 rounded-xl">
+                                <span class="text-gray-400 block mb-1">رشته تحصیلی / مقطع</span>
+                                <strong class="text-white text-sm" x-text="student.major + ' (' + student.degree + ')'"></strong>
+                            </div>
+                            <div class="bg-dark-900/50 border border-dark-700 p-4 rounded-xl">
+                                <span class="text-gray-400 block mb-1">دانشکده / گروه آموزشی</span>
+                                <strong class="text-white text-sm" x-text="student.faculty + ' / ' + student.department"></strong>
+                            </div>
+                            <div class="bg-dark-900/50 border border-dark-700 p-4 rounded-xl">
+                                <span class="text-gray-400 block mb-1">ترم ورود / نوع پذیرش</span>
+                                <strong class="text-white text-sm" x-text="student.admissionSemester + ' - ' + student.admissionType"></strong>
+                            </div>
+                            <div class="bg-dark-900/50 border border-dark-700 p-4 rounded-xl">
+                                <span class="text-gray-400 block mb-1">نظام آموزش / سهمیه</span>
+                                <strong class="text-white text-sm" x-text="student.studyMode + ' / ' + student.quota"></strong>
+                            </div>
+                            <div class="bg-dark-900/50 border border-dark-700 p-4 rounded-xl">
+                                <span class="text-gray-400 block mb-1">تاریخ شروع به تحصیل</span>
+                                <strong class="text-white text-sm" x-text="student.startDate"></strong>
+                            </div>
+                            <div class="bg-dark-900/50 border border-dark-700 p-4 rounded-xl">
+                                <span class="text-gray-400 block mb-1">حداکثر مهلت فارغ‌التحصیلی</span>
+                                <strong class="text-white text-sm" x-text="student.maxGraduationDeadline"></strong>
+                            </div>
+                            
+                            <!-- Sensitive Data Layer Row (Toggled) -->
+                            <div class="bg-rose-500/5 border border-rose-500/20 p-4 rounded-xl md:col-span-2 lg:col-span-3" x-show="showSensitive" x-cloak>
+                                <span class="text-rose-400 block mb-1 font-bold">اطلاعات محرمانه هویتی (امنیت فعال شده)</span>
+                                <div class="flex space-x-6 space-x-reverse mt-2 text-gray-300">
+                                    <span>کد ملی: <strong class="text-white">حذف شده در رابط کاربری</strong></span>
+                                    <span>شماره شناسنامه: <strong class="text-white">حذف شده در رابط کاربری</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Application Script Data Source & State Logic -->
+    <script>
+        function universityApp() {
+            return {
+                currentTab: 'dashboard',
+                courseSearch: '',
+                showSensitive: false,
+                configTotalDegreeUnits: 135, // Default configurable required units for bachelor degree
+
+                tabs: [
+                    { id: 'dashboard', name: 'داشبورد', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-16zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-16z"></path></svg>' },
+                    { id: 'schedule', name: 'برنامه هفتگی', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>' },
+                    { id: 'courses', name: 'دروس ترم جاری', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>' },
+                    { id: 'semesters', name: 'ترم‌های تحصیلی', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>' },
+                    { id: 'grades', name: 'کارنامه و نمرات', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012-2m-6 9l2 2 4-4"></path></svg>' },
+                    { id: 'finance', name: 'امور مالی و شهریه', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>' },
+                    { id: 'progress', name: 'پیشرفت تحصیلی', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>' },
+                    { id: 'profile', name: 'پروفایل دانشجو', icon: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>' }
+                ],
+
+                student: {
+                    name: "محمدمهدی مسعودی مطلق",
+                    studentId: "404542871",
+                    major: "Accounting",
+                    degree: "Bachelor's - Continuous",
+                    faculty: "Karaj",
+                    department: "Accounting",
+                    admissionSemester: "4041",
+                    admissionType: "National Entrance Exam",
+                    studyMode: "Full-time",
+                    quota: "Regional",
+                    startDate: "1404/07/30",
+                    maxGraduationDeadline: "1409/07/29",
+                    overallGpa: "17.34",
+                    totalScore: 589.50,
+                    effectiveUnitsCompleted: 34,
+                    unitsTaken: 53,
+                    unitsPassed: 34,
+                    failedUnits: 0,
+                    probationSemesters: 0,
+                    semestersCompleted: 3,
+                    remainingAllowedSemesters: 7,
+                    lastAcademicStatus: "Currently studying / Eligible for course registration",
+                    lastUpdated: "1405/06/13"
+                },
+
+                daysOfWeek: [
+                    { id: 'Saturday', name: 'شنبه' },
+                    { id: 'Sunday', name: 'یکشنبه' },
+                    { id: 'Monday', name: 'دوشنبه' },
+                    { id: 'Tuesday', name: 'سه‌شنبه' },
+                    { id: 'Wednesday', name: 'چهارشنبه' },
+                    { id: 'Thursday', name: 'پنج‌شنبه' },
+                    { id: 'Friday', name: 'جمعه' }
+                ],
+
+                semester4051Courses: [
+                    {
+                        name: "آمار کاربردی در حسابداری (2)",
+                        code: "7000037850",
+                        offering: "85154",
+                        teacher: "رحیم شیخی",
+                        day: "Monday",
+                        time: "16:30-19:00",
+                        units: 3,
+                        variableTuition: 17373750,
+                        delivery: "In-person"
+                    },
+                    {
+                        name: "اقتصاد کلان",
+                        code: "7000037852",
+                        offering: "85164",
+                        teacher: "فهیمه گنج خانی",
+                        day: "Sunday",
+                        time: "08:00-10:30",
+                        units: 3,
+                        variableTuition: 17373750,
+                        delivery: "In-person"
+                    },
+                    {
+                        name: "حسابداری مالیاتی (1)",
+                        code: "7000037869",
+                        offering: "85178",
+                        teacher: "شیرین امینیان",
+                        day: "Saturday",
+                        time: "09:45-11:30",
+                        units: 2,
+                        variableTuition: 11582500,
+                        delivery: "In-person"
+                    },
+                    {
+                        name: "حسابداری میانه (1)",
+                        code: "7000037860",
+                        offering: "85193",
+                        teacher: "رسول یعقوبی صالح آبادی",
+                        day: "Thursday",
+                        time: "08:00-11:30",
+                        units: 4,
+                        variableTuition: 23165000,
+                        delivery: "In-person"
+                    },
+                    {
+                        name: "حسابداری بهای تمام شده (1)",
+                        code: "7000037862",
+                        offering: "85209",
+                        teacher: "احمد حسن پور",
+                        day: "Friday",
+                        time: "08:00-10:30",
+                        units: 3,
+                        variableTuition: 17373750,
+                        delivery: "In-person"
+                    },
+                    {
+                        name: "زبان انگلیسی عمومی-ترکیبی(2)",
+                        code: "99091",
+                        offering: "6005",
+                        teacher: "مریم افضلی",
+                        day: "Tuesday",
+                        time: "11:00-11:45",
+                        units: 1,
+                        variableTuition: 5791250,
+                        delivery: "Combined"
+                    },
+                    {
+                        name: "فارسی",
+                        code: "90029",
+                        offering: "97227",
+                        teacher: "داود مددی",
+                        day: "Wednesday",
+                        time: "13:00-15:30",
+                        units: 3,
+                        variableTuition: 17373750,
+                        delivery: "In-person"
+                    }
+                ],
+
+                semesters: [
+                    { code: "4041", academicYear: "First semester 1404-1405", status: "Regular / Excellent", gpa: "17.71", unitsTaken: 17, unitsPassed: 17, unitsFailed: 0, totalScore: 301 },
+                    { code: "4042", academicYear: "Second semester 1404-1405", status: "Regular semester", gpa: "16.97", unitsTaken: 17, unitsPassed: 17, unitsFailed: 0, totalScore: 288.50 },
+                    { code: "4051", academicYear: "Current semester (Active)", status: "Currently studying", gpa: "-", unitsTaken: 19, unitsPassed: 0, unitsFailed: 0, totalScore: 0 }
+                ],
+
+                grades4041: [
+                    { name: "مبانی سازمان و کسب و کار", code: "7000037853", units: 3, grade: 15, type: "Basic", weightedScore: 45, status: "Passed" },
+                    { name: "زبان انگلیسی پیش دانشگاهی-ترکیبی", code: "99093", units: 2, grade: 20, type: "Pre-university", weightedScore: 40, status: "Passed" },
+                    { name: "روان شناسی سازمانی", code: "7000037857", units: 2, grade: 19, type: "Basic", weightedScore: 38, status: "Passed" },
+                    { name: "ریاضیات کاربردی در حسابداری (1)", code: "7000037847", units: 3, grade: 18, type: "Basic", weightedScore: 54, status: "Passed" },
+                    { name: "حقوق تجارت", code: "7000037854", units: 3, grade: 20, type: "Basic", weightedScore: 60, status: "Passed" },
+                    { name: "اصول حسابداری (1)", code: "7000037858", units: 4, grade: 16, type: "Specialized", weightedScore: 64, status: "Passed" }
+                ],
+
+                grades4042: [
+                    { name: "اقتصاد خرد", code: "7000037851", units: 3, grade: 18, type: "Basic", weightedScore: 54, status: "Passed" },
+                    { name: "اصول حسابداری (2)", code: "7000037859", units: 4, grade: 18, type: "Specialized", weightedScore: 72, status: "Passed" },
+                    { name: "ریاضیات کاربردی در حسابداری (2)", code: "7000037848", units: 3, grade: 17, type: "Basic", weightedScore: 51, status: "Passed" },
+                    { name: "آمار کاربردی در حسابداری (1)", code: "7000037849", units: 3, grade: 18.5, type: "Basic", weightedScore: 55.5, status: "Passed" },
+                    { name: "آیین زندگی (اخلاق کاربردی)", code: "98923", units: 2, grade: 13, type: "General", weightedScore: 26, status: "Passed" },
+                    { name: "زبان انگلیسی عمومی-ترکیبی(1)", code: "99090", units: 1, grade: 16, type: "General", weightedScore: 16, status: "Passed" },
+                    { name: "کاربینی", code: "7000037646", units: 1, grade: 14, type: "Practical Skills", weightedScore: 14, status: "Passed" }
+                ],
+
+                finance: {
+                    totalDebit: 436703400,
+                    totalCredit: 374410000,
+                    currentBalance: 62293400,
+                    requiredPayment: 62293400,
+                    semesters: [
+                        { code: "4041", fixed: 69223000, variable: 59702300, total: 128925300 },
+                        { code: "4042", fixed: 69223000, variable: 57946350, total: 127169350 },
+                        { code: "4051", fixed: 68200000, variable: 110033750, total: 178233750 }
+                    ]
+                },
+
+                categoryStats: [
+                    { name: "عمومی (General)", taken: 7, passed: 3, failed: 0, gpa: "14.00" },
+                    { name: "پایه (Basic)", taken: 26, passed: 20, failed: 0, gpa: "17.88" },
+                    { name: "تخصصی (Specialized)", taken: 17, passed: 8, failed: 0, gpa: "17.00" },
+                    { name: "پیش‌دانشگاهی (Pre-university)", taken: 2, passed: 2, failed: 0, gpa: "20.00" },
+                    { name: "مهارت‌های عملی (Practical Skills)", taken: 1, passed: 1, failed: 0, gpa: "14.00" }
+                ],
+
+                get filteredCourses() {
+                    if (!this.courseSearch) return this.semester4051Courses;
+                    return this.semester4051Courses.filter(c => 
+                        c.name.toLowerCase().includes(this.courseSearch.toLowerCase()) || 
+                        c.teacher.toLowerCase().includes(this.courseSearch.toLowerCase())
+                    );
+                },
+
+                getCoursesForDay(dayName) {
+                    return this.semester4051Courses.filter(c => c.day === dayName);
+                },
+
+                formatNumber(num) {
+                    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                },
+
+                formatToman(num) {
+                    let toman = Math.round(num / 10);
+                    return `معادل ${this.formatNumber(toman)} تومان`;
+                },
+
+                calculateProgressPercentage() {
+                    let passed = this.student.unitsPassed;
+                    let total = this.configTotalDegreeUnits > 0 ? this.configTotalDegreeUnits : 135;
+                    let pct = (passed / total) * 100;
+                    return Math.min(parseFloat(pct.toFixed(1)), 100);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
