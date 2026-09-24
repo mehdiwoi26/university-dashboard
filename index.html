@@ -2,8 +2,8 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaaS University Portal | Minimalist Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SaaS University Portal | Minimalist & Responsive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -28,28 +28,31 @@
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
-        body { font-family: 'Vazirmatn', sans-serif; background-color: #FAFAFA; color: #111111; }
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #FAFAFA; color: #111111; -webkit-tap-highlight-color: transparent; }
         [x-cloak] { display: none !important; }
         
-        /* Minimalist Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #D4D4D8; }
+        /* Minimalist Scrollbar - Hidden on mobile for cleaner look */
+        @media (min-width: 1024px) {
+            ::-webkit-scrollbar { width: 6px; height: 6px; }
+            ::-webkit-scrollbar-track { background: transparent; }
+            ::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 4px; }
+            ::-webkit-scrollbar-thumb:hover { background: #D4D4D8; }
+        }
 
         /* Minimalist Range Slider */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #111111; cursor: pointer; margin-top: -7px; border: 2px solid #fff; box-shadow: 0 0 0 1px #111; transition: transform 0.1s; }
-        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: #111111; cursor: pointer; margin-top: -8px; border: 2px solid #fff; box-shadow: 0 0 0 1px #111; transition: transform 0.1s; }
+        input[type=range]::-webkit-slider-thumb:active { transform: scale(1.2); }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 2px; cursor: pointer; background: #E4E4E7; }
+        
+        /* Safe area for iOS bottom bar */
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
     </style>
 </head>
 <body class="h-screen flex overflow-hidden selection:bg-black selection:text-white" x-data="appData()">
 
-    <!-- MINIMALIST SIDEBAR -->
+    <!-- MINIMALIST SIDEBAR (Desktop Only) -->
     <aside class="hidden lg:flex flex-col w-64 bg-white border-l border-brand-border h-full flex-shrink-0 z-20">
-        
-        <!-- Profile Area -->
         <div class="p-6 border-b border-brand-border">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-brand-light rounded-full border border-brand-border overflow-hidden flex-shrink-0">
@@ -62,7 +65,6 @@
             </div>
         </div>
 
-        <!-- Navigation -->
         <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
             <template x-for="item in menu" :key="item.id">
                 <button @click="activeTab = item.id"
@@ -74,14 +76,13 @@
             </template>
         </nav>
 
-        <!-- Minimal Alert -->
         <div class="p-4" x-show="student.finance.balance > 0">
             <div class="bg-red-50 border border-red-100 rounded-lg p-4">
                 <div class="flex items-center gap-2 text-red-600 mb-2">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                     <h3 class="font-bold text-xs">بدهی مالی</h3>
                 </div>
-                <p class="text-[11px] text-red-500/80 mb-3">حساب شما دارای بدهی است. دسترسی‌ها محدود شده‌اند.</p>
+                <p class="text-[11px] text-red-500/80 mb-3">حساب شما دارای بدهی است.</p>
                 <button @click="activeTab = 'finance'" class="w-full py-1.5 bg-white border border-red-200 text-red-600 text-xs font-bold rounded hover:bg-red-50 transition-colors">
                     مشاهده صورت‌حساب
                 </button>
@@ -93,11 +94,8 @@
     <div class="flex-1 flex flex-col h-full relative w-full min-w-0 bg-[#FAFAFA]">
         
         <!-- HEADER -->
-        <header class="bg-white border-b border-brand-border h-16 flex items-center justify-between px-6 shrink-0 z-10">
-            <div class="flex items-center gap-4">
-                <button @click="mobileMenu = true" class="lg:hidden text-brand-gray hover:text-brand-black transition-colors">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                </button>
+        <header class="bg-white border-b border-brand-border h-14 md:h-16 flex items-center justify-between px-4 md:px-6 shrink-0 z-10 sticky top-0">
+            <div class="flex items-center gap-3">
                 <h1 class="text-base font-bold text-brand-black" x-text="menu.find(m => m.id === activeTab).title"></h1>
             </div>
 
@@ -117,8 +115,8 @@
             </div>
         </header>
 
-        <!-- CONTENT AREA -->
-        <main class="flex-1 overflow-y-auto p-6 md:p-8">
+        <!-- CONTENT AREA (Added pb-20 for mobile nav spacing) -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 pb-20 md:pb-8 scroll-smooth">
             <div class="max-w-6xl mx-auto">
                 
                 <!-- ================= TAB: DASHBOARD ================= -->
@@ -126,41 +124,171 @@
                      x-transition:enter="transition ease-out duration-200"
                      x-transition:enter-start="opacity-0 translate-y-2"
                      x-transition:enter-end="opacity-100 translate-y-0"
-                     class="space-y-6">
+                     class="space-y-4 md:space-y-6">
                     
                     <!-- Welcome -->
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-2 md:mb-6">
                         <div>
-                            <h2 class="text-2xl font-bold mb-1">وقت بخیر، <span x-text="student.firstName"></span>.</h2>
-                            <p class="text-sm text-brand-gray">خلاصه وضعیت تحصیلی شما در ترم جاری.</p>
+                            <h2 class="text-xl md:text-2xl font-bold mb-1">وقت بخیر، <span x-text="student.firstName"></span>.</h2>
+                            <p class="text-xs md:text-sm text-brand-gray">خلاصه وضعیت تحصیلی شما در ترم جاری.</p>
                         </div>
-                        <button @click="activeTab = 'schedule'" class="px-4 py-2 bg-brand-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
+                        <button @click="activeTab = 'schedule'" class="w-full sm:w-auto px-4 py-2.5 bg-brand-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors text-center">
                             برنامه کلاسی امروز
                         </button>
                     </div>
 
                     <!-- 4 Stat Cards Minimal -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="bg-white border border-brand-border rounded-xl p-5 flex flex-col justify-between">
-                            <p class="text-xs text-brand-gray font-medium mb-3">واحدهای گذرانده</p>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                        <div class="bg-white border border-brand-border rounded-xl p-4 md:p-5 flex flex-col justify-between">
+                            <p class="text-[10px] md:text-xs text-brand-gray font-medium mb-2 md:mb-3">واحدهای گذرانده</p>
                             <div>
-                                <h3 class="text-2xl font-bold font-mono" x-text="student.unitsPassed"></h3>
-                                <p class="text-[11px] text-green-600 mt-1">↑ ۱۷ واحد ترم قبل</p>
+                                <h3 class="text-xl md:text-2xl font-bold font-mono" x-text="student.unitsPassed"></h3>
+                                <p class="text-[10px] text-green-600 mt-1">↑ ۱۷ واحد ترم قبل</p>
                             </div>
                         </div>
                         
-                        <div class="bg-white border border-brand-border rounded-xl p-5 flex flex-col justify-between">
-                            <p class="text-xs text-brand-gray font-medium mb-3">معدل کل</p>
+                        <div class="bg-white border border-brand-border rounded-xl p-4 md:p-5 flex flex-col justify-between">
+                            <p class="text-[10px] md:text-xs text-brand-gray font-medium mb-2 md:mb-3">معدل کل</p>
                             <div>
-                                <h3 class="text-2xl font-bold font-mono" x-text="student.gpa"></h3>
-                                <p class="text-[11px] text-green-600 mt-1">↑ ۰.۲۳ رشد</p>
+                                <h3 class="text-xl md:text-2xl font-bold font-mono" x-text="student.gpa"></h3>
+                                <p class="text-[10px] text-green-600 mt-1">↑ ۰.۲۳ رشد</p>
                             </div>
                         </div>
                         
-                        <div class="bg-white border border-brand-border rounded-xl p-5 flex flex-col justify-between">
-                            <p class="text-xs text-brand-gray font-medium mb-3">واحدهای جاری</p>
+                        <div class="bg-white border border-brand-border rounded-xl p-4 md:p-5 flex flex-col justify-between">
+                            <p class="text-[10px] md:text-xs text-brand-gray font-medium mb-2 md:mb-3">واحدهای جاری</p>
                             <div>
-                                <h3 class="text-2xl font-bold font-mono">19</h3>
+                                <h3 class="text-xl md:text-2xl font-bold font-mono">19</h3>
+                                <p class="text-[10px] text-brand-gray mt-1">ترم ۴۰۵۱</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white border border-brand-border rounded-xl p-4 md:p-5 flex flex-col justify-between">
+                            <p class="text-[10px] md:text-xs text-brand-gray font-medium mb-2 md:mb-3">بدهی مالی (ریال)</p>
+                            <div>
+                                <h3 class="text-base md:text-lg font-bold font-mono truncate" x-text="formatNumber(student.finance.balance)"></h3>
+                                <p class="text-[10px] text-red-500 mt-1">نیازمند تسویه</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Two Column Layout -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 pt-2">
+                        <!-- Progress -->
+                        <div class="bg-white border border-brand-border rounded-xl p-5 md:p-6">
+                            <div class="flex justify-between items-center mb-6 md:mb-8">
+                                <h3 class="font-bold text-sm">پیشرفت تحصیلی</h3>
+                                <span class="text-xs font-mono text-brand-gray bg-brand-light px-2 py-1 rounded" x-text="student.unitsPassed + ' / 142'"></span>
+                            </div>
+                            
+                            <div class="relative pt-1 mb-6 md:mb-8">
+                                <div class="overflow-hidden h-1.5 text-xs flex rounded-full bg-brand-light">
+                                    <div :style="`width: ${degreeProgress()}%`" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-brand-black transition-all duration-500"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <p class="text-xs text-brand-gray mb-1">درصد تکمیل دوره</p>
+                                    <span class="text-2xl md:text-3xl font-bold font-mono" x-text="degreeProgress() + '%'"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Minimal Class List -->
+                        <div class="bg-white border border-brand-border rounded-xl p-5 md:p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-sm">دروس ترم جاری</h3>
+                                <button @click="activeTab = 'schedule'" class="text-xs text-brand-gray hover:text-brand-black transition-colors">همه &rarr;</button>
+                            </div>
+                            <div class="divide-y divide-brand-border">
+                                <template x-for="(course, index) in student.term4051.courses.slice(0,4)" :key="course.id">
+                                    <div class="py-3 flex items-center justify-between group">
+                                        <div class="pr-2 w-3/4">
+                                            <h4 class="text-xs md:text-sm font-medium text-brand-black truncate group-hover:text-blue-600 transition-colors" x-text="course.name"></h4>
+                                            <p class="text-[10px] md:text-xs text-brand-gray mt-0.5 truncate" x-text="course.teacher"></p>
+                                        </div>
+                                        <div class="text-[10px] md:text-xs font-mono text-brand-gray bg-brand-light px-1.5 md:px-2 py-1 rounded whitespace-nowrap flex-shrink-0">
+                                            <span x-text="course.unit + ' واحد'"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= TAB: TRANSCRIPT / GPA ================= -->
+                <div x-show="activeTab === 'transcript'" x-cloak class="space-y-4 md:space-y-6">
+                    <div class="mb-2 md:mb-6">
+                        <h2 class="text-lg md:text-xl font-bold mb-1">شبیه‌ساز معدل</h2>
+                        <p class="text-xs md:text-sm text-brand-gray">نمرات را تغییر دهید تا تاثیر آن را مشاهده کنید.</p>
+                    </div>
+
+                    <div class="flex flex-col lg:flex-row gap-4 md:gap-6">
+                        <!-- Inputs -->
+                        <div class="flex-1 bg-white border border-brand-border rounded-xl p-4 md:p-6">
+                            <div class="space-y-5 md:space-y-6">
+                                <template x-for="(course, index) in student.term4051.courses" :key="course.id">
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 md:gap-4">
+                                        <div class="w-full sm:w-2/5 flex justify-between sm:block items-center">
+                                            <div class="text-xs md:text-sm font-medium truncate" x-text="course.name"></div>
+                                            <div class="text-[10px] md:text-[11px] text-brand-gray bg-brand-light px-2 py-0.5 rounded sm:bg-transparent sm:px-0 sm:py-0" x-text="course.unit + ' واحد'"></div>
+                                        </div>
+                                        <div class="flex items-center gap-3 md:gap-4 w-full sm:flex-1">
+                                            <div class="flex-1 py-2">
+                                                <input type="range" min="0" max="20" step="0.25" x-model.number="calculatorGrades[index]">
+                                            </div>
+                                            <div class="w-12 text-center text-sm font-mono font-bold bg-brand-light py-1.5 rounded flex-shrink-0" x-text="calculatorGrades[index].toFixed(2)"></div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Minimal Result Card -->
+                        <div class="lg:w-72 bg-brand-black text-white rounded-xl p-5 md:p-6 flex flex-col justify-between">
+                            <h3 class="text-xs md:text-sm text-gray-400 mb-6 font-medium">پیش‌بینی معدل کل (CGPA)</h3>
+                            
+                            <div class="text-5xl md:text-6xl font-bold font-mono tracking-tighter mb-8 text-center lg:text-right" x-text="calculateNewCGPA()"></div>
+                            
+                            <div class="border-t border-gray-800 pt-5 space-y-3 md:space-y-4">
+                                <div class="flex justify-between items-center text-xs md:text-sm">
+                                    <span class="text-gray-400">معدل این ترم:</span>
+                                    <span class="font-mono font-bold" x-text="calculateTermGPA()"></span>
+                                </div>
+                                <div class="flex justify-between items-center text-xs md:text-sm">
+                                    <span class="text-gray-400">کل واحدهای گذرانده:</span>
+                                    <span class="font-mono font-bold" x-text="student.unitsPassed + 19"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= TAB: SCHEDULE ================= -->
+                <div x-show="activeTab === 'schedule'" x-cloak class="space-y-4 md:space-y-6">
+                    <div class="mb-2 md:mb-6">
+                        <h2 class="text-lg md:text-xl font-bold mb-1">برنامه هفتگی</h2>
+                        <p class="text-xs md:text-sm text-brand-gray">نیمسال تحصیلی ۴۰۵۱</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <template x-for="(dayClasses, dayName) in getGroupedSchedule()" :key="dayName">
+                            <div class="bg-white border border-brand-border rounded-xl overflow-hidden">
+                                <div class="bg-brand-light px-4 py-2.5 border-b border-brand-border">
+                                    <h3 class="font-bold text-xs md:text-sm" x-text="dayName"></h3>
+                                </div>
+                                <div class="divide-y divide-brand-border">
+                                    <template x-for="course in dayClasses" :key="course.id">
+                                        <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 md:gap-4 hover:bg-gray-50 transition-colors">
+                                            <div>
+                                                <h4 class="font-medium text-sm mb-1" x-text="course.name"></h4>
+                                                <p class="text-[11px] md:text-xs text-brand-gray">استاد: <span x-text="course.teacher"></span></p>
+                                            </div>
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-[10px] md:text-xs font-mono bg-white border border-brand-border px-2 py-1 rounded flex-shrink-0" x-text="course.unit + ' واحد'"></span>
+                                                <div class="flex items-center gap-1.5 text-xs md:text-sm font-mont-bold font-mono">19</h3>
                                 <p class="text-[11px] text-brand-gray mt-1">ترم ۴۰۵۱</p>
                             </div>
                         </div>
