@@ -3,32 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaaS University Portal | Claymorphism Edition</title>
+    <title>SaaS University Portal | Minimalist Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        pastel: {
-                            bg: '#f3f0f8',      /* Soft background from image */
-                            purple: '#a68afc',  /* Sidebar purple */
-                            purpleLight: '#c2aeff',
-                            pink: '#ffb3c6',
-                            peach: '#ffdac1',
-                            yellow: '#ffebb3',
-                            blue: '#a0c4ff',
-                            green: '#b9fbc0',
-                            text: '#4a4a68',    /* Soft dark text */
-                            textLight: '#8a8a9e'
-                        }
-                    },
                     fontFamily: {
                         sans: ['Vazirmatn', 'sans-serif'],
                         mono: ['ui-monospace', 'monospace'],
                     },
-                    borderRadius: {
-                        '4xl': '2.5rem',
+                    colors: {
+                        brand: {
+                            black: '#111111',
+                            gray: '#71717A',
+                            light: '#F4F4F5',
+                            border: '#E4E4E7'
+                        }
                     }
                 }
             }
@@ -37,354 +28,324 @@
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
-        body { font-family: 'Vazirmatn', sans-serif; background-color: #f3f0f8; color: #4a4a68; }
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #FAFAFA; color: #111111; }
         [x-cloak] { display: none !important; }
         
-        /* Premium Scrollbar */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        /* Minimalist Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #d1c8eb; border-radius: 20px; border: 2px solid #f3f0f8; }
+        ::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D4D4D8; }
 
-        /* Claymorphism 3D Shadows */
-        .clay-sidebar {
-            background: #a68afc;
-            box-shadow: 15px 15px 30px rgba(166, 138, 252, 0.25), 
-                        inset -8px -8px 20px rgba(0,0,0,0.1), 
-                        inset 8px 8px 20px rgba(255,255,255,0.3);
-        }
-        
-        .clay-card {
-            background: #ffffff;
-            box-shadow: 12px 12px 24px rgba(200, 195, 215, 0.4), 
-                        -12px -12px 24px rgba(255, 255, 255, 1), 
-                        inset -4px -4px 10px rgba(200, 195, 215, 0.15), 
-                        inset 4px 4px 10px rgba(255, 255, 255, 0.8);
-            border-radius: 2rem;
-        }
-
-        .clay-btn-purple {
-            background: #a68afc;
-            box-shadow: 6px 6px 12px rgba(166, 138, 252, 0.3), 
-                        -4px -4px 10px rgba(255, 255, 255, 0.8),
-                        inset -3px -3px 8px rgba(0,0,0,0.1), 
-                        inset 3px 3px 8px rgba(255,255,255,0.4);
-            transition: transform 0.1s ease;
-        }
-        .clay-btn-purple:active {
-            transform: scale(0.97);
-            box-shadow: inset 4px 4px 10px rgba(0,0,0,0.15), inset -4px -4px 10px rgba(255,255,255,0.2);
-        }
-
-        .clay-btn-pink { background: #ffb3c6; box-shadow: 4px 4px 10px rgba(255, 179, 198, 0.4), inset -2px -2px 6px rgba(0,0,0,0.1), inset 2px 2px 6px rgba(255,255,255,0.5); }
-        .clay-icon-purple { background: #c2aeff; box-shadow: 4px 4px 8px rgba(194, 174, 255, 0.4), inset -2px -2px 5px rgba(0,0,0,0.1), inset 2px 2px 5px rgba(255,255,255,0.5); }
-        .clay-icon-peach { background: #ffdac1; box-shadow: 4px 4px 8px rgba(255, 218, 193, 0.4), inset -2px -2px 5px rgba(0,0,0,0.1), inset 2px 2px 5px rgba(255,255,255,0.5); }
-        .clay-icon-yellow { background: #ffebb3; box-shadow: 4px 4px 8px rgba(255, 235, 179, 0.4), inset -2px -2px 5px rgba(0,0,0,0.1), inset 2px 2px 5px rgba(255,255,255,0.5); }
-        .clay-icon-blue { background: #a0c4ff; box-shadow: 4px 4px 8px rgba(160, 196, 255, 0.4), inset -2px -2px 5px rgba(0,0,0,0.1), inset 2px 2px 5px rgba(255,255,255,0.5); }
-
-        /* Range Slider */
+        /* Minimalist Range Slider */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #a68afc; cursor: pointer; margin-top: -6px; box-shadow: 2px 2px 5px rgba(166, 138, 252, 0.5), inset -2px -2px 4px rgba(0,0,0,0.1), inset 2px 2px 4px rgba(255,255,255,0.6); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: #e3e0ee; border-radius: 10px; box-shadow: inset 2px 2px 4px rgba(0,0,0,0.05); }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #111111; cursor: pointer; margin-top: -7px; border: 2px solid #fff; box-shadow: 0 0 0 1px #111; transition: transform 0.1s; }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 2px; cursor: pointer; background: #E4E4E7; }
     </style>
 </head>
-<body class="h-screen flex overflow-hidden p-4 lg:p-6 gap-6" x-data="appData()">
+<body class="h-screen flex overflow-hidden selection:bg-black selection:text-white" x-data="appData()">
 
-    <!-- SIDEBAR (Floating Clay Panel) -->
-    <aside class="hidden lg:flex flex-col w-[260px] clay-sidebar rounded-[2.5rem] text-white flex-shrink-0 relative z-20 py-8 px-5">
+    <!-- MINIMALIST SIDEBAR -->
+    <aside class="hidden lg:flex flex-col w-64 bg-white border-l border-brand-border h-full flex-shrink-0 z-20">
         
-        <!-- User Profile (Top of sidebar like the image) -->
-        <div class="flex flex-col items-center mb-8 text-center">
-            <div class="w-20 h-20 bg-white p-1 rounded-full mb-3 shadow-lg">
-                <img src="https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=MM&backgroundColor=a68afc" alt="Avatar" class="w-full h-full rounded-full object-cover">
+        <!-- Profile Area -->
+        <div class="p-6 border-b border-brand-border">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-brand-light rounded-full border border-brand-border overflow-hidden flex-shrink-0">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=MM" alt="Avatar" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <h2 class="font-bold text-sm text-brand-black" x-text="student.firstName + ' ' + student.lastName"></h2>
+                    <p class="text-xs text-brand-gray" x-text="student.id"></p>
+                </div>
             </div>
-            <h2 class="font-black text-xl" x-text="'سلام، ' + student.firstName + '!'"></h2>
-            <p class="text-xs text-pastel-purpleLight mt-1" x-text="student.id"></p>
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 space-y-2 mt-4">
+        <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
             <template x-for="item in menu" :key="item.id">
                 <button @click="activeTab = item.id"
-                    class="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 font-bold"
-                    :class="activeTab === item.id ? 'bg-white/20 shadow-inner' : 'hover:bg-white/10'">
-                    <div x-html="item.icon" class="w-6 h-6" :class="activeTab === item.id ? 'text-white' : 'text-pastel-purpleLight'"></div>
-                    <span class="text-sm" x-text="item.title"></span>
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm font-medium"
+                    :class="activeTab === item.id ? 'bg-brand-light text-brand-black' : 'text-brand-gray hover:bg-gray-50 hover:text-brand-black'">
+                    <div x-html="item.icon" class="w-5 h-5"></div>
+                    <span x-text="item.title"></span>
                 </button>
             </template>
         </nav>
 
-        <!-- Payment Reminder (Bottom of sidebar like 'Go Premium') -->
-        <div class="bg-pastel-peach/90 rounded-3xl p-5 mt-auto text-pastel-text shadow-inner border border-white/20 relative overflow-hidden" x-show="student.finance.balance > 0">
-            <div class="absolute -right-4 -top-4 w-12 h-12 bg-white/30 rounded-full blur-md"></div>
-            <div class="w-10 h-10 clay-icon-peach rounded-2xl flex items-center justify-center text-orange-500 mb-3">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <!-- Minimal Alert -->
+        <div class="p-4" x-show="student.finance.balance > 0">
+            <div class="bg-red-50 border border-red-100 rounded-lg p-4">
+                <div class="flex items-center gap-2 text-red-600 mb-2">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <h3 class="font-bold text-xs">بدهی مالی</h3>
+                </div>
+                <p class="text-[11px] text-red-500/80 mb-3">حساب شما دارای بدهی است. دسترسی‌ها محدود شده‌اند.</p>
+                <button @click="activeTab = 'finance'" class="w-full py-1.5 bg-white border border-red-200 text-red-600 text-xs font-bold rounded hover:bg-red-50 transition-colors">
+                    مشاهده صورت‌حساب
+                </button>
             </div>
-            <h3 class="font-black text-sm mb-1">اخطار بدهی مالی</h3>
-            <p class="text-xs mb-4 font-medium opacity-80">مجوز انتخاب واحد بسته است.</p>
-            <button @click="activeTab = 'finance'" class="w-full py-2 bg-pastel-pink text-white text-sm font-bold rounded-xl clay-btn-pink">
-                پرداخت فوری
-            </button>
         </div>
     </aside>
 
     <!-- MAIN WRAPPER -->
-    <div class="flex-1 flex flex-col h-full relative w-full min-w-0">
+    <div class="flex-1 flex flex-col h-full relative w-full min-w-0 bg-[#FAFAFA]">
         
         <!-- HEADER -->
-        <header class="flex items-center justify-between mb-6 shrink-0 z-30 px-2">
+        <header class="bg-white border-b border-brand-border h-16 flex items-center justify-between px-6 shrink-0 z-10">
             <div class="flex items-center gap-4">
-                <button @click="mobileMenu = true" class="lg:hidden p-3 clay-card text-pastel-text">
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <button @click="mobileMenu = true" class="lg:hidden text-brand-gray hover:text-brand-black transition-colors">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
-                <h1 class="text-2xl font-black text-pastel-text hidden sm:block" x-text="menu.find(m => m.id === activeTab).title"></h1>
+                <h1 class="text-base font-bold text-brand-black" x-text="menu.find(m => m.id === activeTab).title"></h1>
             </div>
 
             <div class="flex items-center gap-4">
-                <!-- Search -->
                 <div class="hidden md:flex relative group">
-                    <input type="text" placeholder="جستجو در پورتال..." class="w-72 clay-card py-3 pl-4 pr-12 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pastel-purple/30 transition-all text-pastel-text border-none">
-                    <svg class="w-5 h-5 text-pastel-textLight absolute right-5 top-3.5 group-focus-within:text-pastel-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <svg class="w-4 h-4 text-brand-gray absolute right-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input type="text" placeholder="جستجو..." class="w-64 bg-brand-light border border-transparent rounded-md py-1.5 pl-3 pr-9 text-sm focus:outline-none focus:bg-white focus:border-brand-border focus:ring-1 focus:ring-brand-border transition-all">
                 </div>
                 
-                <!-- Notification -->
-                <button class="relative w-12 h-12 clay-card flex items-center justify-center text-pastel-text hover:text-pastel-purple transition-colors">
-                    <span class="absolute top-3 right-3 flex h-3 w-3">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500 border-2 border-white"></span>
+                <button class="relative text-brand-gray hover:text-brand-black transition-colors">
+                    <span class="absolute -top-1 -right-1 flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-black opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-black"></span>
                     </span>
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                 </button>
             </div>
         </header>
 
         <!-- CONTENT AREA -->
-        <main class="flex-1 overflow-y-auto scroll-smooth pb-10 pr-2 custom-scrollbar">
-            
-            <!-- ================= TAB: DASHBOARD ================= -->
-            <div x-show="activeTab === 'dashboard'" 
-                 x-transition:enter="transition ease-out duration-300"
-                 x-transition:enter-start="opacity-0 translate-y-4"
-                 x-transition:enter-end="opacity-100 translate-y-0"
-                 class="space-y-8">
+        <main class="flex-1 overflow-y-auto p-6 md:p-8">
+            <div class="max-w-6xl mx-auto">
                 
-                <!-- Hero Banner (Inspired by the top card with the girl) -->
-                <div class="clay-sidebar bg-gradient-to-l from-pastel-purple to-[#b49cfc] rounded-[2rem] p-6 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden">
-                    <div class="relative z-10 text-white flex-1 text-center sm:text-right">
-                        <h2 class="text-3xl font-black mb-2 flex items-center justify-center sm:justify-start gap-2">
-                            <span>صبح بخیر،</span> <span x-text="student.firstName"></span>! ☀️
-                        </h2>
-                        <p class="text-sm text-white/80 font-medium mb-6">امروز ۲ کلاس در پیش داری. آماده‌ای برای شروع؟</p>
-                        <button @click="activeTab = 'schedule'" class="px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-xl font-bold text-sm border border-white/30 transition-all flex items-center justify-center sm:justify-start gap-2 mx-auto sm:mx-0">
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            مشاهده برنامه امروز
+                <!-- ================= TAB: DASHBOARD ================= -->
+                <div x-show="activeTab === 'dashboard'" 
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 translate-y-2"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     class="space-y-6">
+                    
+                    <!-- Welcome -->
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                        <div>
+                            <h2 class="text-2xl font-bold mb-1">وقت بخیر، <span x-text="student.firstName"></span>.</h2>
+                            <p class="text-sm text-brand-gray">خلاصه وضعیت تحصیلی شما در ترم جاری.</p>
+                        </div>
+                        <button @click="activeTab = 'schedule'" class="px-4 py-2 bg-brand-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
+                            برنامه کلاسی امروز
                         </button>
                     </div>
-                    <!-- Decorative Graphic Placeholder -->
-                    <div class="hidden md:flex w-40 h-40 bg-white/10 rounded-full blur-xl absolute left-10 top-0"></div>
-                </div>
 
-                <!-- 4 Stat Cards (Inspired by Songs Played, Favorites, etc.) -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-                    <!-- Stat 1 -->
-                    <div class="clay-card p-5 flex flex-col items-center sm:items-start text-center sm:text-right">
-                        <div class="w-12 h-12 clay-icon-purple rounded-[1rem] flex items-center justify-center text-purple-600 mb-4">
-                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                        </div>
-                        <p class="text-xs text-pastel-textLight font-bold mb-1">واحدهای گذرانده</p>
-                        <h3 class="text-3xl font-black text-pastel-text font-mono" x-text="student.unitsPassed"></h3>
-                        <p class="text-[10px] text-emerald-500 font-bold mt-2">+ 17 واحد ترم قبل</p>
-                    </div>
-                    <!-- Stat 2 -->
-                    <div class="clay-card p-5 flex flex-col items-center sm:items-start text-center sm:text-right">
-                        <div class="w-12 h-12 clay-icon-peach rounded-[1rem] flex items-center justify-center text-orange-500 mb-4">
-                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
-                        <p class="text-xs text-pastel-textLight font-bold mb-1">معدل کل (CGPA)</p>
-                        <h3 class="text-3xl font-black text-pastel-text font-mono" x-text="student.gpa"></h3>
-                        <p class="text-[10px] text-emerald-500 font-bold mt-2">+ 0.23 رشد</p>
-                    </div>
-                    <!-- Stat 3 -->
-                    <div class="clay-card p-5 flex flex-col items-center sm:items-start text-center sm:text-right">
-                        <div class="w-12 h-12 clay-icon-yellow rounded-[1rem] flex items-center justify-center text-amber-600 mb-4">
-                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
-                        <p class="text-xs text-pastel-textLight font-bold mb-1">واحدهای ترم جاری</p>
-                        <h3 class="text-3xl font-black text-pastel-text font-mono">19</h3>
-                        <p class="text-[10px] text-pastel-textLight font-bold mt-2">ترم 4051</p>
-                    </div>
-                    <!-- Stat 4 -->
-                    <div class="clay-card p-5 flex flex-col items-center sm:items-start text-center sm:text-right">
-                        <div class="w-12 h-12 clay-icon-blue rounded-[1rem] flex items-center justify-center text-blue-500 mb-4">
-                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
-                        <p class="text-xs text-pastel-textLight font-bold mb-1">بدهی مالی (ریال)</p>
-                        <h3 class="text-xl sm:text-2xl font-black text-pastel-text font-mono tracking-tighter mt-1" x-text="formatNumber(student.finance.balance)"></h3>
-                        <p class="text-[10px] text-rose-500 font-bold mt-2">نیاز به پرداخت</p>
-                    </div>
-                </div>
-
-                <!-- Two Column Layout below -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Progress / Activity Chart Alternative -->
-                    <div class="clay-card p-6 flex flex-col justify-between">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="font-black text-pastel-text">پیشرفت تحصیلی</h3>
-                            <span class="text-xs font-bold px-3 py-1 bg-pastel-bg rounded-xl text-pastel-textLight">کارشناسی</span>
+                    <!-- 4 Stat Cards Minimal -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white border border-brand-border rounded-xl p-5 flex flex-col justify-between">
+                            <p class="text-xs text-brand-gray font-medium mb-3">واحدهای گذرانده</p>
+                            <div>
+                                <h3 class="text-2xl font-bold font-mono" x-text="student.unitsPassed"></h3>
+                                <p class="text-[11px] text-green-600 mt-1">↑ ۱۷ واحد ترم قبل</p>
+                            </div>
                         </div>
                         
-                        <!-- Custom Clay Progress Bar -->
-                        <div class="flex-1 flex flex-col justify-center">
-                            <div class="flex justify-between text-sm font-bold text-pastel-text mb-3">
-                                <span>گذرانده: <span x-text="student.unitsPassed"></span> واحد</span>
-                                <span>کل: 140 واحد</span>
+                        <div class="bg-white border border-brand-border rounded-xl p-5 flex flex-col justify-between">
+                            <p class="text-xs text-brand-gray font-medium mb-3">معدل کل</p>
+                            <div>
+                                <h3 class="text-2xl font-bold font-mono" x-text="student.gpa"></h3>
+                                <p class="text-[11px] text-green-600 mt-1">↑ ۰.۲۳ رشد</p>
                             </div>
-                            <div class="w-full h-8 bg-[#e3e0ee] rounded-full overflow-hidden shadow-inner relative p-1">
-                                <div class="h-full bg-pastel-purple rounded-full relative shadow-[2px_2px_5px_rgba(255,255,255,0.4)_inset]" 
-                                     :style="`width: ${degreeProgress()}%`"></div>
+                        </div>
+                        
+                        <div class="bg-white border border-brand-border rounded-xl p-5 flex flex-col justify-between">
+                            <p class="text-xs text-brand-gray font-medium mb-3">واحدهای جاری</p>
+                            <div>
+                                <h3 class="text-2xl font-bold font-mono">19</h3>
+                                <p class="text-[11px] text-brand-gray mt-1">ترم ۴۰۵۱</p>
                             </div>
-                            <div class="text-center mt-6">
-                                <span class="text-4xl font-black text-pastel-purple font-mono" x-text="degreeProgress() + '%'"></span>
+                        </div>
+                        
+                        <div class="bg-white border border-brand-border rounded-xl p-5 flex flex-col justify-between">
+                            <p class="text-xs text-brand-gray font-medium mb-3">بدهی مالی (ریال)</p>
+                            <div>
+                                <h3 class="text-lg font-bold font-mono" x-text="formatNumber(student.finance.balance)"></h3>
+                                <p class="text-[11px] text-red-500 mt-1">نیازمند تسویه</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Classes List (Inspired by Recently Played) -->
-                    <div class="clay-card p-6">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="font-black text-pastel-text">دروس این ترم</h3>
-                            <button @click="activeTab = 'schedule'" class="text-xs font-bold text-pastel-purple hover:underline">مشاهده همه</button>
-                        </div>
-                        <div class="space-y-4">
-                            <template x-for="(course, index) in student.term4051.courses.slice(0,4)" :key="course.id">
-                                <div class="flex items-center gap-4 p-3 hover:bg-pastel-bg rounded-2xl transition-colors cursor-pointer">
-                                    <div class="w-12 h-12 rounded-xl flex items-center justify-center font-black text-white text-lg shadow-inner"
-                                         :class="['bg-pastel-pink', 'bg-pastel-purple', 'bg-pastel-peach', 'bg-pastel-blue'][index % 4]">
-                                        <span x-text="course.name.substring(0,1)"></span>
-                                    </div>
-                                    <div class="flex-1">
-                                        <h4 class="font-bold text-pastel-text text-sm" x-text="course.name"></h4>
-                                        <p class="text-xs text-pastel-textLight mt-1" x-text="course.teacher"></p>
-                                    </div>
-                                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow text-pastel-purple">
-                                        <svg class="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
-                                    </div>
+                    <!-- Two Column Layout -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
+                        
+                        <!-- Progress (Updated to 142 units) -->
+                        <div class="bg-white border border-brand-border rounded-xl p-6">
+                            <div class="flex justify-between items-center mb-8">
+                                <h3 class="font-bold text-sm">پیشرفت تحصیلی (کارشناسی)</h3>
+                                <span class="text-xs font-mono text-brand-gray" x-text="student.unitsPassed + ' / 142'"></span>
+                            </div>
+                            
+                            <div class="relative pt-1 mb-8">
+                                <div class="overflow-hidden h-1.5 text-xs flex rounded-full bg-brand-light">
+                                    <div :style="`width: ${degreeProgress()}%`" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-brand-black"></div>
                                 </div>
-                            </template>
+                            </div>
+                            
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <p class="text-xs text-brand-gray mb-1">درصد تکمیل دوره</p>
+                                    <span class="text-3xl font-bold font-mono" x-text="degreeProgress() + '%'"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Minimal Class List -->
+                        <div class="bg-white border border-brand-border rounded-xl p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-sm">دروس ترم جاری</h3>
+                                <button @click="activeTab = 'schedule'" class="text-xs text-brand-gray hover:text-brand-black transition-colors">مشاهده همه &rarr;</button>
+                            </div>
+                            <div class="divide-y divide-brand-border">
+                                <template x-for="(course, index) in student.term4051.courses.slice(0,4)" :key="course.id">
+                                    <div class="py-3 flex items-center justify-between group">
+                                        <div>
+                                            <h4 class="text-sm font-medium text-brand-black group-hover:text-blue-600 transition-colors" x-text="course.name"></h4>
+                                            <p class="text-xs text-brand-gray mt-0.5" x-text="course.teacher"></p>
+                                        </div>
+                                        <div class="text-xs font-mono text-brand-gray bg-brand-light px-2 py-1 rounded">
+                                            <span x-text="course.unit + ' واحد'"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- ================= TAB: TRANSCRIPT / GPA ================= -->
-            <div x-show="activeTab === 'transcript'" x-cloak class="space-y-8">
-                
-                <!-- Claymorphism GPA Predictor -->
-                <div class="clay-card p-8 bg-gradient-to-br from-white to-pastel-bg/50 border-t-8 border-t-pastel-purple">
-                    <div class="flex flex-col lg:flex-row gap-10">
-                        <div class="flex-1">
-                            <h3 class="text-2xl font-black text-pastel-text mb-2">ماشین حساب معدل</h3>
-                            <p class="text-sm text-pastel-textLight font-medium mb-8">نمرات احتمالی ترم جاری را با نوارهای زیر تنظیم کنید.</p>
-                            
-                            <div class="space-y-6">
+                <!-- ================= TAB: TRANSCRIPT / GPA ================= -->
+                <div x-show="activeTab === 'transcript'" x-cloak class="space-y-6">
+                    <div class="mb-6">
+                        <h2 class="text-xl font-bold mb-1">شبیه‌ساز معدل</h2>
+                        <p class="text-sm text-brand-gray">با تغییر نمرات احتمالی، تاثیر آن را بر معدل کل مشاهده کنید.</p>
+                    </div>
+
+                    <div class="flex flex-col lg:flex-row gap-6">
+                        <!-- Inputs -->
+                        <div class="flex-1 bg-white border border-brand-border rounded-xl p-6">
+                            <div class="space-y-5">
                                 <template x-for="(course, index) in student.term4051.courses" :key="course.id">
                                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                        <div class="w-1/3">
-                                            <div class="text-sm font-bold text-pastel-text truncate" x-text="course.name"></div>
-                                            <div class="text-[11px] text-pastel-textLight font-medium" x-text="course.unit + ' واحد'"></div>
+                                        <div class="w-2/5">
+                                            <div class="text-sm font-medium truncate" x-text="course.name"></div>
+                                            <div class="text-[11px] text-brand-gray" x-text="course.unit + ' واحد'"></div>
                                         </div>
                                         <div class="flex items-center gap-4 flex-1">
-                                            <input type="range" min="0" max="20" step="0.25" x-model.number="calculatorGrades[index]">
-                                            <div class="w-14 h-10 clay-card flex items-center justify-center text-pastel-purple font-mono font-black text-sm" x-text="calculatorGrades[index].toFixed(2)"></div>
+                                            <input type="range" min="0" max="20" step="0.25" x-model.number="calculatorGrades[index]" class="flex-1">
+                                            <div class="w-12 text-center text-sm font-mono font-bold bg-brand-light py-1 rounded" x-text="calculatorGrades[index].toFixed(2)"></div>
                                         </div>
                                     </div>
                                 </template>
                             </div>
                         </div>
 
-                        <!-- Result Display (Puffy panel) -->
-                        <div class="lg:w-80 clay-sidebar rounded-[2rem] p-8 flex flex-col justify-center text-center">
-                            <p class="text-white/80 text-sm font-bold mb-4">معدل کل پیش‌بینی شده</p>
-                            <div class="text-6xl font-black font-mono mb-8 text-white drop-shadow-md" x-text="calculateNewCGPA()"></div>
+                        <!-- Minimal Result Card -->
+                        <div class="lg:w-72 bg-brand-black text-white rounded-xl p-6 flex flex-col">
+                            <h3 class="text-sm text-gray-400 mb-8 font-medium">پیش‌بینی معدل کل (CGPA)</h3>
                             
-                            <div class="bg-white/20 rounded-2xl p-4 grid grid-cols-2 gap-4 text-white shadow-inner">
-                                <div>
-                                    <p class="text-[11px] opacity-80 mb-1">معدل این ترم</p>
-                                    <p class="text-xl font-bold font-mono" x-text="calculateTermGPA()"></p>
+                            <div class="text-6xl font-bold font-mono tracking-tighter mb-auto" x-text="calculateNewCGPA()"></div>
+                            
+                            <div class="border-t border-gray-800 pt-6 mt-8 space-y-4">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-400">معدل این ترم:</span>
+                                    <span class="font-mono font-bold" x-text="calculateTermGPA()"></span>
                                 </div>
-                                <div>
-                                    <p class="text-[11px] opacity-80 mb-1">کل واحدها</p>
-                                    <p class="text-xl font-bold font-mono" x-text="student.unitsPassed + 19"></p>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-400">کل واحدهای گذرانده:</span>
+                                    <span class="font-mono font-bold" x-text="student.unitsPassed + 19"></span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- ================= TAB: SCHEDULE ================= -->
-            <div x-show="activeTab === 'schedule'" x-cloak class="max-w-4xl mx-auto space-y-6">
-                <h2 class="text-2xl font-black text-pastel-text mb-8 text-center">برنامه هفتگی ترم ۴۰۵۱</h2>
-                
-                <div class="space-y-8">
-                    <template x-for="(dayClasses, dayName) in getGroupedSchedule()" :key="dayName">
-                        <div class="clay-card p-6 relative overflow-hidden">
-                            <!-- Background color accent based on day -->
-                            <div class="absolute right-0 top-0 w-2 h-full bg-pastel-purple rounded-r-2xl"></div>
-                            
-                            <h3 class="text-lg font-black text-pastel-text mb-6 mr-4" x-text="dayName"></h3>
-                            
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mr-4">
-                                <template x-for="course in dayClasses" :key="course.id">
-                                    <div class="p-5 bg-pastel-bg rounded-[1.5rem] shadow-inner border border-white/50 flex flex-col justify-between hover:bg-white transition-colors">
-                                        <div class="flex justify-between items-start mb-4">
-                                            <h4 class="font-bold text-pastel-text text-base leading-tight" x-text="course.name"></h4>
-                                            <span class="bg-white text-pastel-purple text-xs px-3 py-1 rounded-xl font-bold shadow-sm" x-text="course.unit + ' واحد'"></span>
-                                        </div>
-                                        <div>
-                                            <p class="text-xs text-pastel-textLight font-medium mb-3">استاد: <span x-text="course.teacher"></span></p>
-                                            <div class="flex items-center gap-2 text-sm font-black text-pastel-purple bg-white py-2 px-3 rounded-xl shadow-sm w-fit">
-                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                <span x-text="course.timeOnly"></span>
+                <!-- ================= TAB: SCHEDULE ================= -->
+                <div x-show="activeTab === 'schedule'" x-cloak class="space-y-6">
+                    <div class="mb-6">
+                        <h2 class="text-xl font-bold mb-1">برنامه هفتگی</h2>
+                        <p class="text-sm text-brand-gray">نیمسال تحصیلی ۴۰۵۱</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <template x-for="(dayClasses, dayName) in getGroupedSchedule()" :key="dayName">
+                            <div class="bg-white border border-brand-border rounded-xl overflow-hidden">
+                                <div class="bg-brand-light px-5 py-3 border-b border-brand-border">
+                                    <h3 class="font-bold text-sm" x-text="dayName"></h3>
+                                </div>
+                                <div class="divide-y divide-brand-border">
+                                    <template x-for="course in dayClasses" :key="course.id">
+                                        <div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-gray-50 transition-colors">
+                                            <div>
+                                                <h4 class="font-medium text-sm mb-1" x-text="course.name"></h4>
+                                                <p class="text-xs text-brand-gray">استاد: <span x-text="course.teacher"></span></p>
+                                            </div>
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-xs font-mono bg-white border border-brand-border px-2 py-1 rounded" x-text="course.unit + ' واحد'"></span>
+                                                <div class="flex items-center gap-1.5 text-sm font-mono font-medium">
+                                                    <svg class="w-4 h-4 text-brand-gray" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                    <span x-text="course.timeOnly"></span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </template>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- ================= TAB: FINANCE ================= -->
+                <div x-show="activeTab === 'finance'" x-cloak class="space-y-6">
+                    <div class="mb-6">
+                        <h2 class="text-xl font-bold mb-1">امور مالی</h2>
+                        <p class="text-sm text-brand-gray">وضعیت بدهی و پرداخت‌ها</p>
+                    </div>
+                    
+                    <div class="bg-white border border-brand-border rounded-xl p-8 max-w-2xl">
+                        <div class="flex items-center gap-3 mb-8">
+                            <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                            <span class="text-sm font-medium text-brand-gray">وضعیت: بدهکار</span>
+                        </div>
+                        
+                        <div class="mb-10">
+                            <p class="text-xs text-brand-gray mb-2">مبلغ قابل پرداخت</p>
+                            <div class="flex items-end gap-2">
+                                <span class="text-5xl font-bold font-mono tracking-tight" x-text="formatNumber(student.finance.balance)"></span>
+                                <span class="text-sm font-medium text-brand-gray pb-1">ریال</span>
                             </div>
                         </div>
-                    </template>
-                </div>
-            </div>
 
-            <!-- ================= TAB: FINANCE ================= -->
-            <div x-show="activeTab === 'finance'" x-cloak class="space-y-8">
-                
-                <div class="clay-card bg-gradient-to-bl from-pastel-peach to-white p-10 flex flex-col lg:flex-row items-center justify-between gap-10">
-                    <div class="text-center lg:text-right">
-                        <div class="w-16 h-16 clay-icon-peach rounded-[1.5rem] flex items-center justify-center text-orange-500 mb-6 mx-auto lg:mx-0">
-                            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        <div class="flex gap-4">
+                            <button class="px-6 py-2.5 bg-brand-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
+                                پرداخت آنلاین
+                            </button>
+                            <button class="px-6 py-2.5 bg-white border border-brand-border text-brand-black text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                                دریافت رسید
+                            </button>
                         </div>
-                        <p class="text-pastel-textLight font-bold mb-2">وضعیت مالی (بدهکار)</p>
-                        <div class="text-5xl font-black text-pastel-text font-mono" x-text="formatNumber(student.finance.balance)"></div>
-                        <p class="text-sm font-bold text-pastel-textLight mt-2">ریال - IRR</p>
                     </div>
-
-                    <button class="px-10 py-5 text-lg font-black clay-btn-purple flex items-center gap-3">
-                        پرداخت اینترنتی
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                    </button>
                 </div>
-            </div>
 
+            </div>
         </main>
     </div>
 
-    <!-- Mobile Navigation Overlay (Bottom Bar style for clay UI) -->
-    <div class="lg:hidden fixed bottom-6 left-6 right-6 clay-card py-3 px-6 z-50 flex justify-between items-center">
+    <!-- Minimal Mobile Nav Bottom -->
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-brand-border px-6 py-2 z-50 flex justify-between items-center pb-safe">
         <template x-for="item in menu" :key="item.id">
             <button @click="activeTab = item.id"
-                class="p-3 rounded-2xl transition-all"
-                :class="activeTab === item.id ? 'clay-icon-purple text-purple-600' : 'text-pastel-textLight hover:bg-pastel-bg'">
-                <div x-html="item.icon" class="w-6 h-6"></div>
+                class="p-2 flex flex-col items-center gap-1 transition-colors"
+                :class="activeTab === item.id ? 'text-brand-black' : 'text-brand-gray'">
+                <div x-html="item.icon" class="w-5 h-5"></div>
+                <span class="text-[10px] font-medium" x-text="item.title"></span>
             </button>
         </template>
     </div>
@@ -396,10 +357,10 @@
                 mobileMenu: false,
                 
                 menu: [
-                    { id: 'dashboard', title: 'داشبورد من', icon: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>' },
-                    { id: 'schedule', title: 'برنامه هفتگی', icon: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>' },
-                    { id: 'transcript', title: 'محاسبه معدل', icon: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>' },
-                    { id: 'finance', title: 'امور مالی', icon: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>' }
+                    { id: 'dashboard', title: 'داشبورد', icon: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>' },
+                    { id: 'schedule', title: 'برنامه', icon: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>' },
+                    { id: 'transcript', title: 'محاسبه‌گر', icon: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>' },
+                    { id: 'finance', title: 'مالی', icon: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>' }
                 ],
 
                 student: {
@@ -431,7 +392,8 @@
                 },
 
                 degreeProgress() {
-                    return Math.round((this.student.unitsPassed / 140) * 100);
+                    // Update calculation to 142 total units based on request
+                    return Math.round((this.student.unitsPassed / 142) * 100);
                 },
 
                 getGroupedSchedule() {
